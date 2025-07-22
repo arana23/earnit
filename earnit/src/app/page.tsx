@@ -1,9 +1,20 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabaseClient';
+import { useSession } from '@supabase/auth-helpers-react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [goals, setGoals] = useState<{ id: number; title: string; category: string; completed: boolean; reward: { name: string; price: number } }[]>([]);
+  const session = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      router.push('/signin');
+    }
+  }, [session, router]);
+
   useEffect(() => {
     const fetchGoals = async () => {
       const { data, error } = await supabase.from('goals').select('*');
