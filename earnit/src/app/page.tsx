@@ -3,11 +3,14 @@ import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabaseClient';
 import { useSession } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 export default function Home() {
   const [goals, setGoals] = useState<{ id: number; title: string; category: string; completed: boolean; reward: { name: string; price: number } }[]>([]);
   const session = useSession();
   const router = useRouter();
+  const supabase = useSupabaseClient();
 
   useEffect(() => {
     if (!session) {
@@ -25,11 +28,27 @@ export default function Home() {
     fetchGoals();
   }, []);
   
+  const markComplete = async (goalId: number) => {
+    const { error } = await supabase
+      .from('goals')
+      .update({ completed: true, completed_at: new Date().toISOString() })
+      .eq('id', goalId);
+    if (!error) {
+      setGoals(goals => goals.map(goal => goal.id === goalId ? { ...goal, completed: true } : goal));
+    } else {
+      alert('Failed to mark as complete: ' + error.message);
+    }
+  };
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-6 row-start-2 w-full max-w-xl">
         <h1 className="text-2xl font-bold text-center">🎯 Your Goals</h1>
+        <div className="flex justify-center mb-4">
+          <Link href="/add-goal">
+            <button className="bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700">+ Add Goal</button>
+          </Link>
+        </div>
 
         {goals.map((goal) => (
           <div
