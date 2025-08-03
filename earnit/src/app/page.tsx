@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabaseClient';
 import { useSession } from '@supabase/auth-helpers-react';
@@ -44,9 +44,12 @@ export default function Home() {
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-6 row-start-2 w-full max-w-xl">
         <h1 className="text-2xl font-bold text-center">🎯 Your Goals</h1>
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-4 gap-2">
           <Link href="/add-goal">
             <button className="bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700">+ Add Goal</button>
+          </Link>
+          <Link href="/completed">
+            <button className="bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700">Completed Goals</button>
           </Link>
         </div>
 
